@@ -7,6 +7,9 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 
+// ⭐ Import logger middlewares
+import { logger, errorLogger } from "./utils/logger.js";
+
 import studentRoutes from "./routes/studentRoutes.js";
 import materialRoutes from "./routes/materialRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -23,6 +26,9 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
+// ⭐ Log all incoming requests
+app.use(logger);
+
 // Rate limiter
 app.use(rateLimit({
     windowMs: 10 * 60 * 1000,
@@ -38,6 +44,9 @@ app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
     res.send("Professional Backend Running Successfully 🚀");
 });
+
+// ⭐ Log all errors
+app.use(errorLogger);
 
 // Global error handler
 app.use(errorHandler);
